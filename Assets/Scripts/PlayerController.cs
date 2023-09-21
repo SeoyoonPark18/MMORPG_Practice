@@ -9,29 +9,54 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        
+        Managers.Input.KeyAction -= OnKeyboard;
+        Managers.Input.KeyAction += OnKeyboard;
     }
+
+    float _yAngle = 0.0f;
 
     void Update()
     {
+        
+     
+    }
+
+    void OnKeyboard()
+    {
+        _yAngle += Time.deltaTime * _speed;
+        // 절대 회전값
+        //transform.eulerAngles = new Vector3(0.0f, _yAngle, 0.0f);
+        //+- delta
+        //transform.Rotate(new Vector3(0.0f, Time.deltaTime * 100.0f, 0.0f));
+        //Quaternion
+        //transform.rotation = Quaternion.Euler(new Vector3(0.0f, _yAngle, 0.0f));
+
+
         //transform.TransformDirection 은 Local->World
         //InverseTransformDirection 은 World->Local
-
         if (Input.GetKey(KeyCode.W))
         {
-            transform.Translate(Vector3.forward * Time.deltaTime * _speed); //아래와 동일
+            //transform.rotation = Quaternion.LookRotation(Vector3.forward); //해당 방향으로 쳐다보기
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), 0.2f); //자연스럽게 쳐다보기 (0~1)
+            transform.Translate(Vector3.forward * Time.deltaTime * _speed);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position -= transform.TransformDirection(Vector3.back * Time.deltaTime * _speed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), 0.2f);
+            transform.Translate(Vector3.forward * Time.deltaTime * _speed);
+            //transform.position -= transform.TransformDirection(Vector3.back * Time.deltaTime * _speed);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.position -= transform.TransformDirection(Vector3.left * _speed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), 0.2f);
+            transform.Translate(Vector3.forward * Time.deltaTime * _speed);
+            //transform.position -= transform.TransformDirection(Vector3.left * _speed);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position += transform.TransformDirection(Vector3.right * Time.deltaTime * _speed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), 0.2f);
+            transform.Translate(Vector3.forward * Time.deltaTime * _speed);
+            //transform.position += transform.TransformDirection(Vector3.right * Time.deltaTime * _speed);
         }
     }
 }
